@@ -36,6 +36,22 @@ class Node():
         def __str__(self):
             return str(data)
 
+        def shallow_copy(self):
+            return Node(self.data , self.key ,  self.parent , self.left , self.right)
+
+        def deep_copy(self):
+            def _copy(node,parent=None):
+                if node == None:
+                    return None
+                else:
+                    res = Node(node.date , node.key , parent)
+                    left = _copy(node.left , res)
+                    right = _copy(node.right , res)
+                    res.left = left
+                    res.right = right
+                    return res
+            #TODO : assumption the self node is the root
+            return _copy(self)
 
 class BinaryTree():
     
@@ -68,15 +84,18 @@ class BinaryTree():
     def add(self,data,key=None):
         
         n = Node(data,key=key,left=self.root)
-
         self.root.parent = n
         self.root=n
-        
-
+        if self.check_prop(self.root):
+            return
+        else:
+            #roll back
+            pass
+            
     def check_prop(self,root):
-        self.prop_func(root)
+        return self.prop_func(root)
 
-
+    
     #private methods
     def _in_order(self,node):
         if node==None:
@@ -105,6 +124,17 @@ class BinaryTree():
     def _max_heap_prop(self,n):
         return (n.key > (n.left.key if n.left!=None else n.key-1)) and (n.key > (n.right.key if n.right!=None else n.key-1) )
 
+
+    def copy(self):
+        def _copy(node):
+            if node == None:
+                return None
+            else:
+                return node.shallow_copy()
+
+        return BinaryTree(_copy(root))
+
+    
 class HuffmanEndoder():
     """
     HuffmanEncoder for .txt file and decode .cmp files
