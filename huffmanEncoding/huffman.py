@@ -108,12 +108,12 @@ class HuffmanEndoder():
         #TODO : exception handling
         freqs = {}
         with open(path , 'r') as f:
-            for l in f.readlines():
-                for c in l:
-                    if c in freqs:
-                        freqs[c]+=1
-                    else:
-                        freqs[c]=1
+            for c in f.read():
+                
+                if c in freqs:
+                    freqs[c]+=1
+                else:
+                    freqs[c]=1
         return freqs
 
     def _build_tree(self , char_freq):
@@ -134,22 +134,21 @@ class HuffmanEndoder():
             else:
                 _extract(node.left , path+'0')
                 _extract(node.right , path+'1')
-        _extract(root , "")
+        _extract(root , "1")
         return codes
 
 
     def _write_file(self,read_path,write_path):
 
         with open(read_path , 'r') as rf , open(write_path , 'w') as wf:
-            for l in rf.readlines():
-                for c in l:
-                    wf.write(self.codes[c])
+            for c in rf.read():
+                wf.write(self.codes[c])
         
         
 
 
     #Based on CLR
-    def encode(self,path, write_path='enc.cmd'):
+    def encode(self,path, write_path='enc.cmp'):
         
         freqs=self._freq(path)
         n = len(freqs)
@@ -168,10 +167,33 @@ class HuffmanEndoder():
         self._write_file(path , write_path)
 
         
+    def _decode_dic(self):
+        assert self.codes is not None
+        decodes = {}
+        for k in self.codes:
+            decodes[self.codes[k]] = k
+        return decodes
 
-    def decode(self,path):
-        pass
+    def decode(self,path ,decodes=None, write_path='decode.txt'):
+        if decodes is None:
+            decodes = self._decode_dic()
+
+        with open(path , 'r') as rf , open(write_path , 'w') as wf:
+            l = rf.read()
+            res=""
+            curr=0
+            while curr<len(l):
+                if res in decodes:
+                    wf.write(decodes[res])
+                    res=""
+                else:
+                    res+=l[curr]
+                    curr+=1
+            wf.write(decodes[res])
+        
+        
 
 h =HuffmanEndoder()
 root = h.encode('test.txt')
+h.decode('enc.cmp')
 # root.print_down() 
