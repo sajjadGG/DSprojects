@@ -207,7 +207,19 @@ class HuffmanEndoder():
 
     """
     def __init__(self):
-        super().__init__()
+        
+
+    def _freq(self , path):
+        #TODO : exception handling
+        freqs = {}
+        with open(path , 'r') as f:
+            for l in f.readlines():
+                for c in l:
+                    if c in freqs:
+                        freqs[c]+=1
+                    else:
+                        freqs[c]=1
+        return freqs
 
     def _build_tree(self , char_freq):
         
