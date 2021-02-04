@@ -107,8 +107,8 @@ class HuffmanEndoder():
     HuffmanEncoder for .txt file and decode .cmp files
 
     """
-    def __init__(self):
-        pass
+    def __init__(self,deliminator = '\n\n'):
+        self.deliminator = deliminator
 
     def _freq(self , path):
         """[summary]
@@ -181,7 +181,7 @@ class HuffmanEndoder():
                 if i<n:
                     wf.write(',')
                 else:
-                    wf.write('\n')
+                    wf.write(self.deliminator)
 
             for c in rf.read():
                 wf.write(self.codes[c])
@@ -256,11 +256,11 @@ class HuffmanEndoder():
         with open(path , 'r') as rf , open(write_path , 'w') as wf:
             
             l = rf.read()
-            decodes = self._extract_decode(l.split('\n')[0])
+            decodes = self._extract_decode(l.split(self.deliminator)[0])
 
             res=""
             curr=0
-            l = l.split('\n')[1]
+            l = l.split(self.deliminator)[1]
             while curr<len(l):
                 if res in decodes:
                     wf.write(decodes[res])
@@ -284,8 +284,8 @@ if __name__ =='__main__':
         print("done")
 
     elif extension=='cmp':
-        h.decode(inp_path , inp_path+'decoded.txt')
-        
+        h.decode(l , inp_path+'decoded.txt')
+
 
 # root = h.encode('test.txt')
 # h.decode('enc.cmp')
