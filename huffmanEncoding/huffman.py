@@ -7,6 +7,8 @@ h:0
 
 0
 """
+from bitarray import bitarray
+
 
 class Stack():
     """
@@ -156,7 +158,7 @@ class HuffmanEndoder():
             if node is None:
                 return
             if node.is_leaf():
-                codes[node.data] = path
+                codes[node.data] = path[1:]
             else:
                 _extract(node.left , path+'0')
                 _extract(node.right , path+'1')
@@ -173,7 +175,8 @@ class HuffmanEndoder():
         """
         decodes = self._decode_dic()
         n = len(decodes)
-        with open(read_path , 'r') as rf , open(write_path , 'w') as wf:
+        c_length=0
+        with open(read_path , 'r') as rf , open(write_path+'help' , 'w') as wf:
             i = 0
             for k in decodes:
                 wf.write("{}:{}".format(k,decodes[k]))
@@ -182,9 +185,18 @@ class HuffmanEndoder():
                     wf.write(',')
                 else:
                     wf.write(self.deliminator)
-
+        with open(read_path , 'r') as rf , open(write_path , 'wb') as wf:
+            res= ""
             for c in rf.read():
-                wf.write(self.codes[c])
+                res+=self.codes[c]
+                c_length+=1
+
+            bitarray(res).tofile(wf)
+
+        
+        with open(write_path+'help' , 'a') as wf:
+            wf.write(str(c_length))
+            # wf.write(int(res[:],2).to_bytes(4,'big'))
         
         
 
@@ -253,22 +265,33 @@ class HuffmanEndoder():
         """
         
         is_data=False
-        with open(path , 'r') as rf , open(write_path , 'w') as wf:
+        c_length=0
+        with open(path+'help' , 'r') as rf , open(write_path , 'w') as wf:
             
             l = rf.read()
             decodes = self._extract_decode(l.split(self.deliminator)[0])
-
+            c_length = int(l.split(self.deliminator)[1])
             res=""
             curr=0
-            l = l.split(self.deliminator)[1]
+        b= bitarray()
+        c_written=0
+        with open(path,'rb') as rf , open(write_path,'w') as wf:
+            b.fromfile(rf)
+            l = str(b)[10:-2]
+            print(decodes)
+            print('decoding l : {}'.format(l))
             while curr<len(l):
+                if c_written>=c_length:
+                    break
                 if res in decodes:
                     wf.write(decodes[res])
                     res=""
+                    c_written+=1
                 else:
                     res+=l[curr]
                     curr+=1
-            wf.write(decodes[res])
+            if res in decodes:
+                wf.write(decodes[res])
         
         
 
