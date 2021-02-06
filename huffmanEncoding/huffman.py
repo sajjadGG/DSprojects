@@ -104,6 +104,7 @@ class Node():
 
 
 from heapq import *
+
 class HuffmanEndoder():
     """
     HuffmanEncoder for .txt file and decode .cmp files
