@@ -1,6 +1,13 @@
 # DSprojects
 Data Structure related project and Examples
 
+###
+start project with
+```
+pip install -r requirements.txt
+```
+
+
 ## Projects : 
 - Huffman Encoder and Decoder
 
