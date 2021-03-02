@@ -9,7 +9,7 @@ def max_revenue_rec(n , prices):
     else:
         maxq = prices[n-1]
         for i in range(n):
-            candidq = max_revenue(n-i , prices) + max_revenue(i , prices)
+            candidq = max_revenue_rec(n-i , prices) + max_revenue_rec(i , prices)
             if candidq> maxq:
                 maxq = candidq
         return candidq
