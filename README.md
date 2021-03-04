@@ -1,6 +1,12 @@
 # DSprojects
 Data Structure related project and Examples
 
+## Dynamic programming 
+a set of famous DP programs and examples are provided in DP folder
+### list
+- rod cutting
+- matrix chain multiplication
+
 ###
 start project with
 ```
