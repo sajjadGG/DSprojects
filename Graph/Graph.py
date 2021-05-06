@@ -1,9 +1,16 @@
 
 class Node:
 
-    def __init__(self , key , value):
+    def __init__(self , key , value , extra=None):
         self.key = key
-        self.value = value
+        self.value = value if value is not None else key
+        self.extra = extra if extra is not None else dict()
+
+    def __getattr__(self , attr):
+        return self.extra[attr]
+
+    def __setattr__(self, name, value):
+        self.extra[name] == value
 
     def __hash__(self):
         return hash(self.key)
@@ -14,19 +21,18 @@ class Node:
     def __ne__(self, other):
         return not(self == other)
 
-class Graph:
+    def __str__(self):
+        return "K:{}|V:{}".format(self.key , self.value)
+
+
+class UndirectedGraph:
 
     def __init__(self , adj_matrix : list = None , adj_list :dict =None , max_size=None , number_vertecies=None):
-
-        if adj_matrix is not None:
-            self.adj_matrix = adj_matrix
-        else:
-            self.adj_matrix == self.to_adjacent_matrix
 
         if adj_list is not None:
             self.adj_list = adj_list
         else:
-            self.adj_list = self.to_adjacent_list
+            self.adj_list = self.to_adjacent_list(adj_matrix = adj_matrix)
 
     def add_vertex(self , v:Node):
         if v not in self.adj_list:
@@ -36,7 +42,13 @@ class Graph:
             raise Exception("Vertex already exists")
 
     def add_edge(self , e:tuple):
-        pass 
+        u,v = e
+        if u not in self.adj_list or v not in self.adj_list:
+            raise Exception("vertex not in graph")
+
+        else:
+            self.adj_list[u].append(v)
+            self.adj_list[v].append(u)
 
     def to_adjacent_matrix(self):
         """
@@ -44,7 +56,7 @@ class Graph:
         """
         pass
 
-    def to_adjacent_list(self):
+    def to_adjacent_list(self,*args ,**kwargs):
         """
             create adjacent list representation from adjacent matrix
         """
